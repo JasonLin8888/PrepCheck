@@ -3,7 +3,7 @@ import os
 # Import the OpenAI library to interact with OpenAI's API
 from openai import OpenAI
 
-#client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 import gradio
 
 
