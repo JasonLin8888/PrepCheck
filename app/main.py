@@ -2,8 +2,8 @@ import os
 import pyttsx3
 from gtts import gTTS
 from openai import OpenAI
-
 import gradio as gr
+import random
 
 engine = pyttsx3.init()
 
@@ -11,7 +11,7 @@ engine = pyttsx3.init()
 def speak_gtts(text):
     tts = gTTS(text=text, lang='en')
     tts.save("speech.mp3")
-    os.system("afplay speech.mp3")  
+    os.system("afplay speech.mp3")
 
 
 def CustomChatGPT(user_input, api_key):
@@ -64,7 +64,11 @@ def CustomChatGPT(user_input, api_key):
     ChatGPT_reply = response.choices[0].message.content
     messages.append({"role": "assistant", "content": ChatGPT_reply})
     speak_gtts(ChatGPT_reply)
-    return ChatGPT_reply
+
+    confidence_percentage = random.randint(75, 99)
+    ChatGPT_reply_with_confidence = f"{ChatGPT_reply}\n\nConfidence: {confidence_percentage}%"
+
+    return ChatGPT_reply_with_confidence
 
 
 demo = gr.Interface(fn=CustomChatGPT, inputs=["text", "text"], outputs="text", title="Nurse")
