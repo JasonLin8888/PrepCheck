@@ -1,33 +1,18 @@
 import os
 import pyttsx3
-import requests
 from gtts import gTTS
-# Import the OpenAI library to interact with OpenAI's API
 from openai import OpenAI
-ELEVEN_LABS_API_KEY = "sk_fe60aa1136d05b35d985d3ca83dfbec77f4085e27e3775b0" 
+
 import gradio as gr
+
 engine = pyttsx3.init()
 
-def text_to_speech_eleven_labs(text):
-    url = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"  # Replace {voice_id} with your desired voice ID
-    headers = {
-        "xi-api-key": ELEVEN_LABS_API_KEY,
-        "Content-Type": "application/json",
-    }
-    data = {
-        "text": text,
-        "voice": "your_voice_id",  # Replace with your chosen voice ID from Eleven Labs
-        "model_id": "eleven_multilingual_v1"  # This is an example; you can choose a different model if desired
-    }
 
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 200:
-        audio_content = response.content
-        with open("output.mp3", "wb") as audio_file:
-            audio_file.write(audio_content)
-        os.system("start output.mp3")  # For Windows, use 'start'; for Mac use 'open'
-    else:
-        print("Error:", response.status_code, response.text)
+def speak_gtts(text):
+    tts = gTTS(text=text, lang='en')
+    tts.save("speech.mp3")
+    os.system("afplay speech.mp3")  
+
 
 def CustomChatGPT(user_input, api_key):
     client = OpenAI(api_key=api_key)
@@ -78,10 +63,10 @@ def CustomChatGPT(user_input, api_key):
 
     ChatGPT_reply = response.choices[0].message.content
     messages.append({"role": "assistant", "content": ChatGPT_reply})
-    text_to_speech_eleven_labs(ChatGPT_reply)
+    speak_gtts(ChatGPT_reply)
     return ChatGPT_reply
 
 
 demo = gr.Interface(fn=CustomChatGPT, inputs=["text", "text"], outputs="text", title="Nurse")
 
-demo.launch(share=True) 
+demo.launch(share=True)
